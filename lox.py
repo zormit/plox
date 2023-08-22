@@ -2,11 +2,8 @@
 from enum import Enum
 from attrs import asdict, define, make_class, Factory
 from typing import List
+from token_type import *
 
-TokenType = Enum(
-    "TokenType",
-    "LEFT_PAREN RIGHT_PAREN LEFT_BRACE RIGHT_BRACE COMMA DOT MINUS PLUS SEMICOLON SLASH STAR BANG BANG_EQUAL EQUAL EQUAL_EQUAL GREATER GREATER_EQUAL LESS LESS_EQUAL IDENTIFIER STRING NUMBER AND CLASS ELSE FALSE FUN FOR IF NIL OR PRINT RETURN SUPER THIS TRUE VAR WHILE EOF",
-)
 hadError = False
 
 
@@ -27,22 +24,22 @@ class Scanner:
     line: int = 1
 
     _keywords = {
-        "and": TokenType.AND,
-        "class": TokenType.CLASS,
-        "else": TokenType.ELSE,
-        "false": TokenType.FALSE,
-        "for": TokenType.FOR,
-        "fun": TokenType.FUN,
-        "if": TokenType.IF,
-        "nil": TokenType.NIL,
-        "or": TokenType.OR,
-        "print": TokenType.PRINT,
-        "return": TokenType.RETURN,
-        "super": TokenType.SUPER,
-        "this": TokenType.THIS,
-        "true": TokenType.TRUE,
-        "var": TokenType.VAR,
-        "while": TokenType.WHILE,
+        "and": AND,
+        "class": CLASS,
+        "else": ELSE,
+        "false": FALSE,
+        "for": FOR,
+        "fun": FUN,
+        "if": IF,
+        "nil": NIL,
+        "or": OR,
+        "print": PRINT,
+        "return": RETURN,
+        "super": SUPER,
+        "this": THIS,
+        "true": TRUE,
+        "var": VAR,
+        "while": WHILE,
     }
 
     def scan_tokens(self) -> List[Token]:
@@ -50,7 +47,7 @@ class Scanner:
             self.start = self.current
             self.scan_token()
 
-        self.tokens.append(Token(TokenType.EOF, "", None, self.line))
+        self.tokens.append(Token(EOF, "", None, self.line))
         return self.tokens
 
     def at_end(self) -> bool:
@@ -93,50 +90,50 @@ class Scanner:
         c = self.advance()
         match c:
             case "(":
-                self.add_token(TokenType.LEFT_PAREN)
+                self.add_token(LEFT_PAREN)
             case ")":
-                self.add_token(TokenType.RIGHT_PAREN)
+                self.add_token(RIGHT_PAREN)
             case "{":
-                self.add_token(TokenType.LEFT_BRACE)
+                self.add_token(LEFT_BRACE)
             case "}":
-                self.add_token(TokenType.RIGHT_BRACE)
+                self.add_token(RIGHT_BRACE)
             case ",":
-                self.add_token(TokenType.COMMA)
+                self.add_token(COMMA)
             case ".":
-                self.add_token(TokenType.DOT)
+                self.add_token(DOT)
             case "-":
-                self.add_token(TokenType.MINUS)
+                self.add_token(MINUS)
             case "+":
-                self.add_token(TokenType.PLUS)
+                self.add_token(PLUS)
             case ";":
-                self.add_token(TokenType.SEMICOLON)
+                self.add_token(SEMICOLON)
             case "*":
-                self.add_token(TokenType.STAR)
+                self.add_token(STAR)
             case "!":
                 if self.match("="):
-                    self.add_token(TokenType.BANG_EQUAL)
+                    self.add_token(BANG_EQUAL)
                 else:
-                    self.add_token(TokenType.BANG)
+                    self.add_token(BANG)
             case "=":
                 if self.match("="):
-                    self.add_token(TokenType.EQUAL_EQUAL)
+                    self.add_token(EQUAL_EQUAL)
                 else:
-                    self.add_token(TokenType.EQUAL)
+                    self.add_token(EQUAL)
             case "<":
                 if self.match("="):
-                    self.add_token(TokenType.LESS_EQUAL)
+                    self.add_token(LESS_EQUAL)
                 else:
-                    self.add_token(TokenType.LESS)
+                    self.add_token(LESS)
             case ">":
                 if self.match("="):
-                    self.add_token(TokenType.GREATER_EQUAL)
+                    self.add_token(GREATER_EQUAL)
                 else:
-                    self.add_token(TokenType.GREATER)
+                    self.add_token(GREATER)
             case "/":
                 if self.match("/"):
                     self.discard_line()
                 else:
-                    self.add_token(TokenType.SLASH)
+                    self.add_token(SLASH)
             case " " | "\r" | "\t":
                 # Ignore whitespace
                 pass
@@ -162,7 +159,7 @@ class Scanner:
         while self.is_alpha(self.peek()):
             self.advance()
         text = self.source[self.start : self.current]
-        token_type = self._keywords.get(text, TokenType.IDENTIFIER)
+        token_type = self._keywords.get(text, IDENTIFIER)
         self.add_token(token_type)
 
     def string(self) -> None:
@@ -178,7 +175,7 @@ class Scanner:
         self.advance()
 
         value = self.source[self.start + 1 : self.current - 1]
-        self.add_token(TokenType.STRING, value)
+        self.add_token(STRING, value)
 
     def number(self) -> None:
         while self.is_digit(self.peek()):
@@ -187,7 +184,7 @@ class Scanner:
             self.advance()
         while self.is_digit(self.peek()):
             self.advance()
-        self.add_token(TokenType.NUMBER, float(self.source[self.start : self.current]))
+        self.add_token(NUMBER, float(self.source[self.start : self.current]))
 
 
 def run(source: str) -> None:

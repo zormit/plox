@@ -1,6 +1,6 @@
 import pytest
 
-from lox import Scanner
+from scanner import Scanner
 
 def test_dot():
     scanner = Scanner("1.2+3a.5")

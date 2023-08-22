@@ -1,4 +1,4 @@
-# TODO: add command line arguments to also run a file.
+import argparse
 from scanner import Scanner
 
 hadError = False
@@ -16,6 +16,12 @@ def error(line: int, message: str, where: str = ""):
     print(f"[line {line}] Error{where}: {message}")
     hadError = True
 
+def run_file(filename: str) -> None:
+    try:
+        with open(filename, 'r') as file:
+            run(file.read())
+    except FileNotFoundError as e:
+        print(f"could not open {filename}: {e}")
 
 def runPrompt():
     while True:
@@ -27,8 +33,14 @@ def runPrompt():
         run(line)
 
 
+parser = argparse.ArgumentParser(description='lox interpreter')
+parser.add_argument('filename', nargs='?')
 def main():
-    runPrompt()
+    args = parser.parse_args()
+    if args.filename is not None:
+        run_file(args.filename)
+    else:
+        runPrompt()
 
 
 if __name__ == "__main__":

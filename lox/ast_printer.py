@@ -1,5 +1,4 @@
-from . import expr
-from .scanner import Token
+from .token import Token
 from .token_type import *
 
 
@@ -27,6 +26,8 @@ class AstPrinter:
 
 
 if __name__ == "__main__":
+    from . import expr
+
     expression = expr.Binary(
         expr.Unary(Token(MINUS, "-", None, 1), expr.Literal(123)),
         Token(STAR, "*", None, 1),

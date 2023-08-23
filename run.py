@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import sys
-from .scanner import Scanner
+from lox.scanner import Scanner
 
 hadError = False
 

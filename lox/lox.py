@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import sys
 from .scanner import Scanner
 
 hadError = False

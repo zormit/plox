@@ -1,6 +1,6 @@
-from scanner import Token
-import expr
-from token_type import *
+from . import expr
+from .scanner import Token
+from .token_type import *
 
 
 class AstPrinter:

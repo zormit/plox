@@ -1,5 +1,5 @@
 from attrs import define, Factory
-from scanner import Token
+from .scanner import Token
 
 _grammar = {
     # fmt: off

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from scanner import Scanner
+from .scanner import Scanner
 
 hadError = False
 

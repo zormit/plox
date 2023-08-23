@@ -1,6 +1,6 @@
 from attrs import define, Factory
 from typing import List
-from token_type import *
+from .token_type import *
 
 
 @define

@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 import argparse
 import sys
+from lox.ast_printer import AstPrinter
 from lox.error import error_handler
+from lox.parser import Parser
 from lox.scanner import Scanner
 
 
 def run(source: str) -> None:
     scanner = Scanner(source)
     tokens = scanner.scan_tokens()
-    print(tokens)
+    parser = Parser(tokens)
+    expression = parser.parse()
     if error_handler.had_error:
         sys.exit(65)
+    AstPrinter().print(expression)
 
 
 def run_file(filename: str) -> None:

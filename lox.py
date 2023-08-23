@@ -17,12 +17,14 @@ def error(line: int, message: str, where: str = ""):
     print(f"[line {line}] Error{where}: {message}")
     hadError = True
 
+
 def run_file(filename: str) -> None:
     try:
-        with open(filename, 'r') as file:
+        with open(filename, "r") as file:
             run(file.read())
     except FileNotFoundError as e:
         print(f"could not open {filename}: {e}")
+
 
 def runPrompt():
     while True:
@@ -34,8 +36,10 @@ def runPrompt():
         run(line)
 
 
-parser = argparse.ArgumentParser(description='lox interpreter')
-parser.add_argument('filename', nargs='?')
+parser = argparse.ArgumentParser(description="lox interpreter")
+parser.add_argument("filename", nargs="?")
+
+
 def main():
     args = parser.parse_args()
     if args.filename is not None:

@@ -1,14 +1,7 @@
 from attrs import define, Factory
 from typing import List
 from .token_type import *
-
-
-@define
-class Token:
-    token_type: TokenType
-    lexeme: str
-    literal: object
-    line: int
+from .token import Token
 
 
 @define

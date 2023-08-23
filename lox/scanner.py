@@ -1,5 +1,6 @@
 from attrs import define, Factory
 from typing import List
+from .error import error_handler
 from .token_type import *
 from .token import Token
 
@@ -136,7 +137,7 @@ class Scanner:
                 elif self.is_alpha(c):
                     self.identifier()
                 else:
-                    error(self.line, "Unexpected character.")
+                    error_handler.error(self.line, "Unexpected character.")
 
     def is_digit(self, c):
         return c in set("0123456789")
@@ -154,11 +155,11 @@ class Scanner:
     def string(self) -> None:
         while self.peek() != '"' and not self.at_end():
             if self.peek() == "\n":
-                line += 1
+                self.line += 1
             self.advance()
 
         if self.at_end():
-            error(self.line, "Unterminated string.")
+            error_handler.error(self.line, "Unterminated string.")
             return
 
         self.advance()

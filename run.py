@@ -1,22 +1,16 @@
 #!/usr/bin/env python3
 import argparse
 import sys
+from lox.error import error_handler
 from lox.scanner import Scanner
-
-hadError = False
 
 
 def run(source: str) -> None:
     scanner = Scanner(source)
     tokens = scanner.scan_tokens()
     print(tokens)
-    if hadError:
+    if error_handler.had_error:
         sys.exit(65)
-
-
-def error(line: int, message: str, where: str = ""):
-    print(f"[line {line}] Error{where}: {message}")
-    hadError = True
 
 
 def run_file(filename: str) -> None:

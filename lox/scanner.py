@@ -145,8 +145,11 @@ class Scanner:
     def is_alpha(self, c):
         return c in set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_")
 
+    def is_alphanumeric(self, c) -> bool:
+        return self.is_alpha(c) or self.is_digit(c)
+
     def identifier(self) -> None:
-        while self.is_alpha(self.peek()):
+        while self.is_alphanumeric(self.peek()):
             self.advance()
         text = self.source[self.start : self.current]
         token_type = self._keywords.get(text, IDENTIFIER)

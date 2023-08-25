@@ -1,4 +1,4 @@
-from attrs import define, Factory
+from attrs import define
 from .token import Token
 
 _grammar = {

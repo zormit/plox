@@ -1,6 +1,7 @@
 from attrs import define, Factory
 from typing import List, Optional
 from .expr import *
+from .stmt import Stmt, Print, Expression
 from .token import Token
 from .token_type import *
 
@@ -13,11 +14,26 @@ class Parser:
     class ParseError(RuntimeError):
         pass
 
-    def parse(self) -> Optional[Expr]:
-        try:
-            return self._expression()
-        except self.ParseError:
-            return None
+    def parse(self) -> list[Stmt]:
+        statements = []
+        while not self._at_end():
+            statements.append(self._statement())
+        return statements
+
+    def _statement(self) -> Stmt:
+        if self._match(PRINT):
+            return self._print_statment()
+        return self._expression_statement()
+
+    def _print_statment(self) -> Stmt:
+        value = self._expression()
+        self._consume(SEMICOLON, "Expect ';' after value")
+        return Print(value)
+
+    def _expression_statement(self) -> Stmt:
+        expr = self._expression()
+        self._consume(SEMICOLON, "Expect ';' after expression")
+        return Expression(expr)
 
     def _expression(self) -> Expr:
         return self._equality()

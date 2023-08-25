@@ -11,10 +11,8 @@ def run(source: str) -> None:
     scanner = Scanner(source)
     tokens = scanner.scan_tokens()
     parser = Parser(tokens)
-    expression = parser.parse()
-    interpreter = Interpreter()
-    if expression is not None:
-        interpreter.interpret(expression)
+    statements = parser.parse()
+    print(statements)
 
 
 def run_file(filename: str) -> None:

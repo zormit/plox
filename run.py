@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import argparse
 import sys
-from lox.ast_printer import AstPrinter
 from lox.error import error_handler
+from lox.interpreter import Interpreter
 from lox.parser import Parser
 from lox.scanner import Scanner
 
@@ -12,15 +12,20 @@ def run(source: str) -> None:
     tokens = scanner.scan_tokens()
     parser = Parser(tokens)
     expression = parser.parse()
-    if error_handler.had_error:
+    if error_handler.had_error or expression is None:
         sys.exit(65)
-    AstPrinter().print(expression)
+    interpreter = Interpreter()
+    interpreter.interpret(expression)
 
 
 def run_file(filename: str) -> None:
     try:
         with open(filename, "r") as file:
             run(file.read())
+        if error_handler.had_error:
+            sys.exit(65)
+        if error_handler.had_runtime_error:
+            sys.exit(70)
     except FileNotFoundError as e:
         print(f"could not open {filename}: {e}")
 

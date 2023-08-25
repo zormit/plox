@@ -21,7 +21,9 @@ _grammar = {
 
 @define
 class Expr:
-    pass
+    # TODO: make abstract method? How to define this interface?
+    def visit(self, visitor):
+        pass
 
 
 @define

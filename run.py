@@ -12,10 +12,9 @@ def run(source: str) -> None:
     tokens = scanner.scan_tokens()
     parser = Parser(tokens)
     expression = parser.parse()
-    if error_handler.had_error or expression is None:
-        sys.exit(65)
     interpreter = Interpreter()
-    interpreter.interpret(expression)
+    if expression is not None:
+        interpreter.interpret(expression)
 
 
 def run_file(filename: str) -> None:

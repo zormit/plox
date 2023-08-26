@@ -132,4 +132,5 @@ class Interpreter:
         if all(isinstance(op, float) for op in operands):
             return True
         label = "Operand" if len(operands) == 1 else "Operands"
-        raise LoxRuntimeError(operator, f"{label} must be a number")
+        expected = "a number" if len(operands) == 1 else "numbers"
+        raise LoxRuntimeError(operator, f"{label} must be {expected}.")

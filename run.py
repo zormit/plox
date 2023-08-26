@@ -12,7 +12,8 @@ def run(source: str) -> None:
     tokens = scanner.scan_tokens()
     parser = Parser(tokens)
     statements = parser.parse()
-    print(statements)
+    interpreter = Interpreter()
+    interpreter.interpret(statements)
 
 
 def run_file(filename: str) -> None:

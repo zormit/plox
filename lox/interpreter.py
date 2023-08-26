@@ -1,18 +1,22 @@
 from typing import TypeGuard, Callable
 from .error import LoxRuntimeError, error_handler
 from .expr import *
+from .stmt import Stmt, Expression, Print
 from .token import Token
 from .token_type import *
 from .token_type import GREATER
 
 
 class Interpreter:
-    def interpret(self, expr: Expr) -> None:
+    def interpret(self, statements: list[Stmt]) -> None:
         try:
-            value = self.evaluate(expr)
-            print(self.stringify(value))
+            for statement in statements:
+                self.execute(statement)
         except LoxRuntimeError as e:
             error_handler.runtime_error(e)
+
+    def execute(self, stmt: Stmt):
+        return stmt.visit(self)
 
     def evaluate(self, expr: Expr) -> str | float | bool | None:
         return expr.visit(self)
@@ -28,6 +32,13 @@ class Interpreter:
         if isinstance(value, bool):
             return str(value).lower()
         return str(value)
+
+    def visit_expression_stmt(self, stmt: Expression) -> None:
+        self.evaluate(stmt.expression)
+
+    def visit_print_stmt(self, stmt: Print) -> None:
+        value = self.evaluate(stmt.expression)
+        print(self.stringify(value))
 
     def visit_binary_expr(self, expr: Binary) -> object:
         left = self.evaluate(expr.left)

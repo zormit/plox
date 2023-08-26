@@ -55,7 +55,6 @@ class Parser:
     def _expression(self) -> Expr:
         return self._equality()
 
-
     def _equality(self) -> Expr:
         expr = self._comparison()
 

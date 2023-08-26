@@ -3,7 +3,7 @@ from typing import TypeGuard, Callable
 from .environment import Environment
 from .error import LoxRuntimeError, error_handler
 from .expr import *
-from .stmt import Stmt, Expression, Print, Var
+from .stmt import Stmt, Block, Expression, Print, Var
 from .token import Token
 from .token_type import *
 from .token_type import GREATER
@@ -37,6 +37,24 @@ class Interpreter:
         if isinstance(value, bool):
             return str(value).lower()
         return str(value)
+
+    def visit_block_stmt(self, stmt: Block) -> None:
+        # TODO: gnah, mypy makes me go mad!
+        self.execute_block(stmt.statements, Environment(self._environment))
+
+    def execute_block(
+        self, statements: list[Stmt | None], environment: Environment
+    ) -> None:
+        previous = self._environment
+        try:
+            self._environment = environment
+            for statement in statements:
+                # TODO: [mypy] -- if we made it through the parser without error,
+                # the stmt list shouldn't contain None. How to teach that to the typechecker?
+                if statement is not None:
+                    self.execute(statement)
+        finally:
+            self._environment = previous
 
     def visit_expression_stmt(self, stmt: Expression) -> None:
         self.evaluate(stmt.expression)

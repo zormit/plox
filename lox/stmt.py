@@ -12,6 +12,14 @@ class Stmt:
 
 
 @define
+class Block(Stmt):
+    statements: list[Stmt | None]
+
+    def visit(self, visitor):
+        visitor.visit_block_stmt(self)
+
+
+@define
 class Expression(Stmt):
     expression: Expr
 

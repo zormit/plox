@@ -61,9 +61,9 @@ class Interpreter:
         right = self.evaluate(expr.right)
 
         if expr.operator.token_type == TokenType.BANG_EQUAL:
-            return left != right
+            return not self.is_equal(left, right)
         if expr.operator.token_type == TokenType.EQUAL_EQUAL:
-            return left == right
+            return self.is_equal(left, right)
 
         operations: dict[TokenType, Callable[[float, float], float]] = {
             TokenType.GREATER: (lambda a, b: a > b),
@@ -75,9 +75,28 @@ class Interpreter:
             TokenType.SLASH: (lambda a, b: a / b),
             TokenType.STAR: (lambda a, b: a * b),
         }
+        if expr.operator.token_type == TokenType.PLUS:
+            if isinstance(left, float) and isinstance(right, float):
+                return left + right
+            if isinstance(left, str) and isinstance(right, str):
+                return left + right
+            raise LoxRuntimeError(
+                expr.operator, "Operands must be two numbers or two strings."
+            )
         if self.ensure_float([left, right], expr.operator):
             return operations[expr.operator.token_type](left, right)
         return None
+
+    def is_equal(self, a, b):
+        if a is None and b is None:
+            return True
+        if isinstance(a, bool) and isinstance(b, bool):
+            return a == b
+        if isinstance(a, float) and isinstance(b, float):
+            return a == b
+        if isinstance(a, str) and isinstance(b, str):
+            return a == b
+        return False
 
     def visit_grouping_expr(self, expr: Grouping) -> object:
         return self.evaluate(expr.expression)

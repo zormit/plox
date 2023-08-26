@@ -6,13 +6,14 @@ from lox.interpreter import Interpreter
 from lox.parser import Parser
 from lox.scanner import Scanner
 
+interpreter = Interpreter()
+
 
 def run(source: str) -> None:
     scanner = Scanner(source)
     tokens = scanner.scan_tokens()
     parser = Parser(tokens)
     statements = parser.parse()
-    interpreter = Interpreter()
     interpreter.interpret(statements)
 
 

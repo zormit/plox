@@ -1,13 +1,18 @@
+from attrs import define, Factory
 from typing import TypeGuard, Callable
+from .environment import Environment
 from .error import LoxRuntimeError, error_handler
 from .expr import *
-from .stmt import Stmt, Expression, Print
+from .stmt import Stmt, Expression, Print, Var
 from .token import Token
 from .token_type import *
 from .token_type import GREATER
 
 
+@define
 class Interpreter:
+    _environment: Environment = Factory(lambda: Environment())
+
     def interpret(self, statements: list[Stmt]) -> None:
         try:
             for statement in statements:
@@ -39,6 +44,12 @@ class Interpreter:
     def visit_print_stmt(self, stmt: Print) -> None:
         value = self.evaluate(stmt.expression)
         print(self.stringify(value))
+
+    def visit_var_stmt(self, stmt: Var) -> None:
+        value = None
+        if stmt.initializer is not None:
+            value = self.evaluate(stmt.initializer)
+        self._environment.define(stmt.name.lexeme, value)
 
     def visit_binary_expr(self, expr: Binary) -> object:
         left = self.evaluate(expr.left)
@@ -78,6 +89,9 @@ class Interpreter:
                 if self.ensure_float([right], expr.operator):
                     return -right
         return None
+
+    def visit_variable_expr(self, expr: Variable) -> object:
+        return self._environment.get(expr.name)
 
     def truthy(self, o: object) -> bool:
         if o is None:

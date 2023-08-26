@@ -26,6 +26,7 @@ class Print(Stmt):
     def visit(self, visitor):
         visitor.visit_print_stmt(self)
 
+
 @define
 class Var(Stmt):
     name: Token

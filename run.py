@@ -14,7 +14,8 @@ def run(source: str) -> None:
     tokens = scanner.scan_tokens()
     parser = Parser(tokens)
     statements = parser.parse()
-    interpreter.interpret(statements)
+    if not error_handler.had_error:
+        interpreter.interpret(statements)
 
 
 def run_file(filename: str) -> None:

@@ -27,6 +27,15 @@ class Expr:
 
 
 @define
+class Assign(Expr):
+    name: Token
+    value: Expr
+
+    def visit(self, visitor):
+        return visitor.visit_assign_expr(self)
+
+
+@define
 class Binary(Expr):
     left: Expr
     operator: Token

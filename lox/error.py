@@ -1,3 +1,4 @@
+import sys
 from attrs import define
 from .token import Token
 from .token_type import EOF
@@ -15,7 +16,7 @@ class ErrorHandler:
     had_runtime_error: bool = False
 
     def error(self, line: int, message: str, where: str = ""):
-        print(f"[line {line}] Error{where}: {message}")
+        self.eprint(f"[line {line}] Error{where}: {message}")
         self.had_error = True
 
     def token_error(self, token: Token, message: str):
@@ -25,9 +26,12 @@ class ErrorHandler:
             self.error(token.line, message, where=f" at '{token.lexeme}'")
 
     def runtime_error(self, error: LoxRuntimeError) -> None:
-        print(error.message)
-        print(f"[line {error.token.line}]")
+        self.eprint(error.message)
+        self.eprint(f"[line {error.token.line}]")
         self.had_runtime_error = True
+
+    def eprint(self, msg: str):
+        print(msg, file=sys.stderr)
 
 
 # singleton for globally tracking whether error occurred

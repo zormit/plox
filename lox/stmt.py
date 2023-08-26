@@ -1,5 +1,7 @@
 from attrs import define
+from typing import Optional
 from .expr import Expr
+from .token import Token
 
 
 @define
@@ -23,3 +25,11 @@ class Print(Stmt):
 
     def visit(self, visitor):
         visitor.visit_print_stmt(self)
+
+@define
+class Var(Stmt):
+    name: Token
+    initializer: Optional[Expr]
+
+    def visit(self, visitor):
+        visitor.visit_var_stmt(self)

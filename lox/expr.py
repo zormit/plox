@@ -60,3 +60,10 @@ class Unary(Expr):
 
     def visit(self, visitor):
         return visitor.visit_unary_expr(self)
+
+@define
+class Variable(Expr):
+    name: Token
+
+    def visit(self, visitor):
+        return visitor.visit_variable_expr(self)

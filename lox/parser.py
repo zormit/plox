@@ -1,7 +1,7 @@
 from attrs import define, Factory
 from typing import List, Optional
 from .expr import *
-from .stmt import Stmt, Print, Expression
+from .stmt import Stmt, Print, Expression, Var
 from .token import Token
 from .token_type import *
 
@@ -14,11 +14,20 @@ class Parser:
     class ParseError(RuntimeError):
         pass
 
-    def parse(self) -> list[Stmt]:
+    def parse(self) -> list[Optional[Stmt]]:
         statements = []
         while not self._at_end():
-            statements.append(self._statement())
+            statements.append(self._declaration())
         return statements
+
+    def _declaration(self) -> Optional[Stmt]:
+        try:
+            if self._match(VAR):
+                return self._var_declaration()
+            return self._statement()
+        except self.ParseError:
+            self._synchronize()
+            return None
 
     def _statement(self) -> Stmt:
         if self._match(PRINT):
@@ -35,8 +44,17 @@ class Parser:
         self._consume(SEMICOLON, "Expect ';' after expression")
         return Expression(expr)
 
+    def _var_declaration(self) -> Stmt:
+        name = self._consume(IDENTIFIER, "Expect variable name.")
+        initializer = None
+        if self._match(EQUAL):
+            initializer = self._expression()
+        self._consume(SEMICOLON, "Expect ';' after variable declaration.")
+        return Var(name, initializer)
+
     def _expression(self) -> Expr:
         return self._equality()
+
 
     def _equality(self) -> Expr:
         expr = self._comparison()
@@ -89,6 +107,9 @@ class Parser:
 
         if self._match(NUMBER, STRING):
             return Literal(self._previous().literal)
+
+        if self._match(IDENTIFIER):
+            return Variable(self._previous())
 
         if self._match(LEFT_PAREN):
             expr = self._expression()

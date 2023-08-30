@@ -30,6 +30,8 @@ class Parser:
             return None
 
     def _statement(self) -> Stmt:
+        if self._match(FOR):
+            return self._for_statement()
         if self._match(IF):
             return self._if_statement()
         if self._match(PRINT):
@@ -39,6 +41,40 @@ class Parser:
         if self._match(LEFT_BRACE):
             return Block(self._block())
         return self._expression_statement()
+
+    def _for_statement(self) -> Stmt:
+        self._consume(LEFT_PAREN, "Expect '(' after 'for'.")
+
+        initializer: Stmt | None
+        if self._match(SEMICOLON):
+            initializer = None
+        elif self._match(VAR):
+            initializer = self._var_declaration()
+        else:
+            initializer = self._expression_statement()
+
+        condition = None
+        if not self._check(SEMICOLON):
+            condition = self._expression()
+        self._consume(SEMICOLON, "Expect ';' after loop condition.")
+
+        increment = None
+        if not self._check(RIGHT_PAREN):
+            increment = self._expression()
+        self._consume(RIGHT_PAREN, "Expect ')' after for clauses.")
+
+        body = self._statement()
+
+        if increment is not None:
+            body = Block([body, Expression(increment)])
+        if condition is None:
+            condition = Literal(True)
+        body = While(condition, body)
+        if initializer is not None:
+            body = Block([initializer, body])
+
+        return body
+
 
     def _if_statement(self) -> Stmt:
         self._consume(LEFT_PAREN, "Expect '(' after 'if'.")
@@ -65,7 +101,7 @@ class Parser:
 
     def _expression_statement(self) -> Stmt:
         expr = self._expression()
-        self._consume(SEMICOLON, "Expect ';' after expression")
+        self._consume(SEMICOLON, "Expect ';' after expression.")
         return Expression(expr)
 
     def _var_declaration(self) -> Stmt:

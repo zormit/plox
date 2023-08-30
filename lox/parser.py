@@ -1,7 +1,7 @@
 from attrs import define, Factory
 from typing import List, Optional
 from .expr import *
-from .stmt import Stmt, Block, Expression, Print, Var
+from .stmt import *
 from .token import Token
 from .token_type import *
 
@@ -30,11 +30,24 @@ class Parser:
             return None
 
     def _statement(self) -> Stmt:
+        if self._match(IF):
+            return self._if_statement()
         if self._match(PRINT):
             return self._print_statement()
         if self._match(LEFT_BRACE):
             return Block(self._block())
         return self._expression_statement()
+
+    def _if_statement(self) -> Stmt:
+        self._consume(LEFT_PAREN, "Expect '(' after 'if'.")
+        condition = self._expression()
+        self._consume(RIGHT_PAREN, "Expect ')' after if condition.")
+
+        then_branch = self._statement()
+        else_branch = None
+        if self._match(ELSE):
+            else_branch = self._statement()
+        return If(condition, then_branch, else_branch)
 
     def _block(self) -> list[Stmt | None]:
         statements: list[Stmt | None] = []

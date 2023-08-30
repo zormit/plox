@@ -28,6 +28,16 @@ class Expression(Stmt):
 
 
 @define
+class If(Stmt):
+    condition: Expr
+    then_branch: Stmt
+    else_branch: Stmt | None
+
+    def visit(self, visitor):
+        visitor.visit_if_stmt(self)
+
+
+@define
 class Print(Stmt):
     expression: Expr
 

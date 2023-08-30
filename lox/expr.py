@@ -63,6 +63,16 @@ class Literal(Expr):
 
 
 @define
+class Logical(Expr):
+    left: Expr
+    operator: Token
+    right: Expr
+
+    def visit(self, visitor):
+        return visitor.visit_logical_expr(self)
+
+
+@define
 class Unary(Expr):
     operator: Token
     right: Expr

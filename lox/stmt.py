@@ -52,3 +52,12 @@ class Var(Stmt):
 
     def visit(self, visitor):
         visitor.visit_var_stmt(self)
+
+
+@define
+class While(Stmt):
+    condition: Expr
+    body: Stmt
+
+    def visit(self, visitor):
+        visitor.visit_while_stmt(self)

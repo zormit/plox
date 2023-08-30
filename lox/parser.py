@@ -31,7 +31,7 @@ class Parser:
 
     def _statement(self) -> Stmt:
         if self._match(PRINT):
-            return self._print_statment()
+            return self._print_statement()
         if self._match(LEFT_BRACE):
             return Block(self._block())
         return self._expression_statement()
@@ -43,7 +43,7 @@ class Parser:
         self._consume(RIGHT_BRACE, "Expect '}' after block.")
         return statements
 
-    def _print_statment(self) -> Stmt:
+    def _print_statement(self) -> Stmt:
         value = self._expression()
         self._consume(SEMICOLON, "Expect ';' after value")
         return Print(value)

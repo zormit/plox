@@ -194,7 +194,7 @@ class Parser:
 
     def _finish_call(self, callee: Expr) -> Expr:
         arguments: list[Expr] = []
-        if self._check(RIGHT_PAREN):
+        if not self._check(RIGHT_PAREN):
             while True:
                 if len(arguments) >= 255:
                     self._error(self._peek(), "Can't have more than 255 arguments.")

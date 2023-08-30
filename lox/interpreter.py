@@ -1,5 +1,6 @@
 from attrs import define, Factory
 from typing import TypeGuard, Callable
+from .callable import LoxCallable
 from .environment import Environment
 from .error import LoxRuntimeError, error_handler
 from .expr import *
@@ -115,6 +116,24 @@ class Interpreter:
         if self.ensure_float([left, right], expr.operator):
             return operations[expr.operator.token_type](left, right)
         return None
+
+    def visit_call_expr(self, expr: Call):
+        callee = self.evaluate(expr.callee)
+
+        arguments: list[object] = []
+        for argument in expr.arguments:
+            arguments.append(self.evaluate(argument))
+
+        if isinstance(callee, LoxCallable):
+            function = callee
+            if len(arguments) != function.arity():
+                raise LoxRuntimeError(
+                    expr.paren,
+                    f"Expected {function.arity()} arguments but got {len(arguments)}.",
+                )
+            return function.call(self, arguments)
+        else:
+            raise LoxRuntimeError(expr.paren, "Can only call functions and classes.")
 
     def is_equal(self, a, b):
         if a is None and b is None:

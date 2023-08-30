@@ -3,7 +3,7 @@ from typing import TypeGuard, Callable
 from .environment import Environment
 from .error import LoxRuntimeError, error_handler
 from .expr import *
-from .stmt import Stmt, Block, Expression, Print, Var
+from .stmt import *
 from .token import Token
 from .token_type import *
 from .token_type import GREATER
@@ -58,6 +58,13 @@ class Interpreter:
 
     def visit_expression_stmt(self, stmt: Expression) -> None:
         self.evaluate(stmt.expression)
+
+    def visit_if_stmt(self, stmt: If) -> None:
+        condition = self.evaluate(stmt.condition)
+        if self.truthy(condition):
+            self.execute(stmt.then_branch)
+        elif stmt.else_branch is not None:
+            self.execute(stmt.else_branch)
 
     def visit_print_stmt(self, stmt: Print) -> None:
         value = self.evaluate(stmt.expression)

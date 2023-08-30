@@ -75,7 +75,6 @@ class Parser:
 
         return body
 
-
     def _if_statement(self) -> Stmt:
         self._consume(LEFT_PAREN, "Expect '(' after 'if'.")
         condition = self._expression()
@@ -191,7 +190,28 @@ class Parser:
             operator = self._previous()
             right = self._unary()
             return Unary(operator, right)
-        return self._primary()
+        return self._call()
+
+    def _finish_call(self, callee: Expr) -> Expr:
+        arguments: list[Expr] = []
+        if self._check(RIGHT_PAREN):
+            while True:
+                if len(arguments) >= 255:
+                    self._error(self._peek(), "Can't have more than 255 arguments.")
+                arguments.append(self._expression())
+                if self._match(COMMA):
+                    break
+        paren = self._consume(RIGHT_PAREN, "Expect ')' after arguments")
+        return Call(callee, paren, arguments)
+
+    def _call(self) -> Expr:
+        expr = self._primary()
+        while True:
+            if self._match(LEFT_PAREN):
+                expr = self._finish_call(expr)
+            else:
+                break
+        return expr
 
     def _primary(self) -> Expr:
         if self._match(FALSE):

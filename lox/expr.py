@@ -46,6 +46,16 @@ class Binary(Expr):
 
 
 @define
+class Call(Expr):
+    callee: Expr
+    paren: Token
+    arguments: list[Expr]
+
+    def visit(self, visitor):
+        return visitor.visit_call_expr(self)
+
+
+@define
 class Grouping(Expr):
     expression: Expr
 

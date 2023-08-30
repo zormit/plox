@@ -129,6 +129,16 @@ class Interpreter:
     def visit_literal_expr(self, expr: Literal) -> object:
         return expr.value
 
+    def visit_logical_expr(self, expr: Logical) -> object:
+        left = self.evaluate(expr.left)
+        if expr.operator.token_type == OR:
+            if self.truthy(left):
+                return left
+        else:
+            if not self.truthy(left):
+                return left
+        return self.evaluate(expr.right)
+
     def visit_unary_expr(self, expr: Unary) -> object:
         right = self.evaluate(expr.right)
         match expr.operator.token_type:

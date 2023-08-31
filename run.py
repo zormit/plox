@@ -6,7 +6,7 @@ from lox.interpreter import Interpreter
 from lox.parser import Parser
 from lox.scanner import Scanner
 
-interpreter = Interpreter()
+interpreter = Interpreter.with_time()
 
 
 def run(source: str) -> None:

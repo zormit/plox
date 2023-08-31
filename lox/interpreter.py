@@ -12,7 +12,31 @@ from .token_type import GREATER
 
 @define
 class Interpreter:
-    _environment: Environment = Factory(lambda: Environment())
+    global_env: Environment = Factory(lambda: Environment())
+    _environment: Environment | None = None
+
+    def __attrs_post_init__(self):
+        self._environment = self.global_env
+
+    @classmethod
+    def with_time(cls) -> "Interpreter":
+        import time
+
+        @define
+        class Clock(LoxCallable):
+            def arity(self):
+                return 0
+
+            def call(self, interpreter, arguments):
+                # TODO: make this compatible with the base impl of Lox
+                return time.time()
+
+            def __str__(self):
+                return "<native fn>"
+
+        interpreter = Interpreter()
+        interpreter.global_env.define("clock", Clock())
+        return interpreter
 
     def interpret(self, statements: list[Stmt]) -> None:
         try:

@@ -30,6 +30,8 @@ class Parser:
             return None
 
     def _statement(self) -> Stmt:
+        if self._match(FUN):
+            return self._function("function")
         if self._match(FOR):
             return self._for_statement()
         if self._match(IF):
@@ -41,6 +43,26 @@ class Parser:
         if self._match(LEFT_BRACE):
             return Block(self._block())
         return self._expression_statement()
+
+    def _function(self, kind: str) -> Stmt:
+        name = self._consume(IDENTIFIER, f"Expect {kind} name.")
+        self._consume(LEFT_PAREN, f"Expect '(' after {kind} name.")
+        parameters: list[Token] = []
+
+        if not self._check(RIGHT_PAREN):
+            while True:
+                if len(parameters) >= 255:
+                    self._error(self._peek(), "Can't have more than 255 arguments.")
+                parameters.append(self._consume(IDENTIFIER, "Expect a parameter name."))
+                if not self._match(COMMA):
+                    break
+        paren = self._consume(RIGHT_PAREN, "Expect ')' after parameters.")
+
+        self._consume(LEFT_BRACE, f"Expect '{{' before {kind} body.")
+
+        body = self._block()
+
+        return Function(name, parameters, body)
 
     def _for_statement(self) -> Stmt:
         self._consume(LEFT_PAREN, "Expect '(' after 'for'.")

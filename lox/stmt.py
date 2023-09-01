@@ -36,6 +36,14 @@ class If(Stmt):
     def visit(self, visitor):
         visitor.visit_if_stmt(self)
 
+@define
+class Function(Stmt):
+    name: Token
+    parameters: list[Token]
+    body: list[Stmt]
+
+    def visit(self, visitor):
+        visitor.visit_function_stmt()
 
 @define
 class Print(Stmt):

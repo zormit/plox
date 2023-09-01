@@ -86,10 +86,12 @@ class Parser:
             else_branch = self._statement()
         return If(condition, then_branch, else_branch)
 
-    def _block(self) -> list[Stmt | None]:
-        statements: list[Stmt | None] = []
+    def _block(self) -> list[Stmt]:
+        statements: list[Stmt] = []
         while not self._check(RIGHT_BRACE) and not self._at_end():
-            statements.append(self._declaration())
+            declaration = self._declaration()
+            if declaration is not None:
+                statements.append(declaration)
         self._consume(RIGHT_BRACE, "Expect '}' after block.")
         return statements
 

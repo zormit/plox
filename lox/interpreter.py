@@ -68,16 +68,13 @@ class Interpreter:
         self.execute_block(stmt.statements, Environment(self._environment))
 
     def execute_block(
-        self, statements: list[Stmt | None], environment: Environment
+        self, statements: list[Stmt], environment: Environment
     ) -> None:
         previous = self._environment
         try:
             self._environment = environment
             for statement in statements:
-                # TODO: [mypy] -- if we made it through the parser without error,
-                # the stmt list shouldn't contain None. How to teach that to the typechecker?
-                if statement is not None:
-                    self.execute(statement)
+                self.execute(statement)
         finally:
             self._environment = previous
 

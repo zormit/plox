@@ -13,7 +13,7 @@ class Stmt:
 
 @define
 class Block(Stmt):
-    statements: list[Stmt | None]
+    statements: list[Stmt]
 
     def visit(self, visitor):
         visitor.visit_block_stmt(self)

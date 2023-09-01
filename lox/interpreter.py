@@ -22,6 +22,8 @@ class Interpreter:
     def with_time(cls) -> "Interpreter":
         import time
 
+        interpreter = Interpreter()
+
         @define
         class Clock(LoxCallable):
             def arity(self):
@@ -34,7 +36,6 @@ class Interpreter:
             def __str__(self):
                 return "<native fn>"
 
-        interpreter = Interpreter()
         interpreter.global_env.define("clock", Clock())
         return interpreter
 

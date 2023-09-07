@@ -44,7 +44,7 @@ class Function(Stmt):
     body: list[Stmt]
 
     def visit(self, visitor):
-        visitor.visit_function_stmt()
+        visitor.visit_function_stmt(self)
 
 
 @define

@@ -1,6 +1,6 @@
 from attrs import define, Factory
 from typing import TypeGuard, Callable
-from .callable import LoxCallable
+from .callable import LoxCallable, LoxFunction
 from .environment import Environment
 from .error import LoxRuntimeError, error_handler
 from .expr import *
@@ -79,6 +79,10 @@ class Interpreter:
 
     def visit_expression_stmt(self, stmt: Expression) -> None:
         self.evaluate(stmt.expression)
+
+    def visit_function_stmt(self, stmt: Function) -> None:
+        function = LoxFunction(stmt)
+        self._environment.define(stmt.name.lexeme, function)
 
     def visit_if_stmt(self, stmt: If) -> None:
         condition = self.evaluate(stmt.condition)

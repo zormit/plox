@@ -56,6 +56,15 @@ class Print(Stmt):
 
 
 @define
+class Return(Stmt):
+    keyword: Token
+    value: Expr | None
+
+    def visit(self, visitor):
+        visitor.visit_print_stmt(self)
+
+
+@define
 class Var(Stmt):
     name: Token
     initializer: Optional[Expr]

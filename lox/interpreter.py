@@ -68,9 +68,7 @@ class Interpreter:
         # TODO: gnah, mypy makes me go mad!
         self.execute_block(stmt.statements, Environment(self._environment))
 
-    def execute_block(
-        self, statements: list[Stmt], environment: Environment
-    ) -> None:
+    def execute_block(self, statements: list[Stmt], environment: Environment) -> None:
         previous = self._environment
         try:
             self._environment = environment

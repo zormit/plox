@@ -15,6 +15,10 @@ class Interpreter:
     global_env: Environment = Factory(lambda: Environment())
     _environment: Environment | None = None
 
+    @define
+    class RuntimeReturn(RuntimeError):
+        value: object
+
     def __attrs_post_init__(self):
         self._environment = self.global_env
 
@@ -94,6 +98,13 @@ class Interpreter:
     def visit_print_stmt(self, stmt: Print) -> None:
         value = self.evaluate(stmt.expression)
         print(self.stringify(value))
+
+    def visit_return_stmt(self, stmt: Return) -> None:
+        value = None
+        if stmt.value is not None:
+            value = self.evaluate(stmt.value)
+
+        raise self.RuntimeReturn(value)
 
     def visit_var_stmt(self, stmt: Var) -> None:
         value = None

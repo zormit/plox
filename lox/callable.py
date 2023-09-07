@@ -24,7 +24,10 @@ class LoxFunction(LoxCallable):
         for i, parameter in enumerate(self._declaration.parameters):
             environment.define(parameter.lexeme, arguments[i])
 
-        interpreter.execute_block(self._declaration.body, environment)
+        try:
+            interpreter.execute_block(self._declaration.body, environment)
+        except interpreter.RuntimeReturn as return_value:
+            return return_value.value
         return None
 
     def __str__(self) -> str:

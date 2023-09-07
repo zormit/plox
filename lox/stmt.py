@@ -61,7 +61,7 @@ class Return(Stmt):
     value: Expr | None
 
     def visit(self, visitor):
-        visitor.visit_print_stmt(self)
+        visitor.visit_return_stmt(self)
 
 
 @define

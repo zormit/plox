@@ -54,7 +54,7 @@ class Parser:
         if not self._check(RIGHT_PAREN):
             while True:
                 if len(parameters) >= 255:
-                    self._error(self._peek(), "Can't have more than 255 arguments.")
+                    self._error(self._peek(), "Can't have more than 255 parameters.")
                 parameters.append(self._consume(IDENTIFIER, "Expect a parameter name."))
                 if not self._match(COMMA):
                     break
@@ -235,7 +235,7 @@ class Parser:
                 arguments.append(self._expression())
                 if not self._match(COMMA):
                     break
-        paren = self._consume(RIGHT_PAREN, "Expect ')' after arguments")
+        paren = self._consume(RIGHT_PAREN, "Expect ')' after arguments.")
         return Call(callee, paren, arguments)
 
     def _call(self) -> Expr:

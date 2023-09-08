@@ -20,6 +20,9 @@ def run(source: str) -> None:
 
     resolver = Resolver(interpreter)
     resolver.resolve([s for s in statements if s is not None])
+    if error_handler.had_error:
+        return
+
     interpreter.interpret([s for s in statements if s is not None])
 
 

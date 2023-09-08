@@ -1,4 +1,5 @@
 from attrs import define, Factory
+from enum import Enum
 from typing import TypeGuard, Callable
 from .callable import LoxCallable, LoxFunction
 from .environment import Environment
@@ -10,10 +11,15 @@ from .token import Token
 from .token_type import *
 
 
+FunctionType = Enum("FunctionType", ["NONE", "FUNCTION"])
+
+
 @define
 class Resolver:
     _interpreter: Interpreter
     _scopes: list[dict[str, bool]] = Factory(list)
+    # TODO: do we need factory here? :thinking:
+    _current_function: FunctionType = FunctionType.NONE
 
     def visit_block_stmt(self, stmt: Block) -> None:
         self._begin_scope()
@@ -56,15 +62,20 @@ class Resolver:
     def visit_function_stmt(self, stmt: Function) -> None:
         self._declare(stmt.name)
         self._define(stmt.name)
-        self._resolve_function(stmt)
+        self._resolve_function(stmt, FunctionType.FUNCTION)
 
-    def _resolve_function(self, function: Function):
+    def _resolve_function(self, function: Function, function_type: FunctionType):
+        enclosing_function = self._current_function
+        self._current_function = function_type
+
         self._begin_scope()
         for param in function.parameters:
             self._declare(param)
             self._define(param)
         self.resolve(function.body)
         self._end_scope()
+
+        self._current_function = enclosing_function
 
     def visit_if_stmt(self, stmt: If) -> None:
         self._resolve(stmt.condition)
@@ -76,6 +87,9 @@ class Resolver:
         self._resolve(stmt.expression)
 
     def visit_return_stmt(self, stmt: Return) -> None:
+        if self._current_function == FunctionType.NONE:
+            error_handler.token_error(stmt.keyword, "Can't return from top-level code.")
+
         if stmt.value is not None:
             self._resolve(stmt.value)
 

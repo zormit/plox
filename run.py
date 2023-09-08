@@ -3,6 +3,7 @@ import argparse
 import sys
 from lox.error import error_handler
 from lox.interpreter import Interpreter
+from lox.resolver import Resolver
 from lox.parser import Parser
 from lox.scanner import Scanner
 
@@ -14,8 +15,12 @@ def run(source: str) -> None:
     tokens = scanner.scan_tokens()
     parser = Parser(tokens)
     statements = parser.parse()
-    if not error_handler.had_error:
-        interpreter.interpret(statements)
+    if error_handler.had_error:
+        return
+
+    resolver = Resolver(interpreter)
+    resolver.resolve([s for s in statements if s is not None])
+    interpreter.interpret([s for s in statements if s is not None])
 
 
 def run_file(filename: str) -> None:

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from attrs import define, Factory
 from typing import Optional, Self
 from .error import LoxRuntimeError
@@ -28,3 +29,17 @@ class Environment:
 
     def define(self, name: str, value: object) -> None:
         self._values[name] = value
+
+    def ancestor(self, distance: int) -> Environment:
+        environment = self
+        for _ in range(distance):
+            # TODO: is this somehow guaranteed? what if not?
+            if environment.enclosing is not None:
+                environment = environment.enclosing
+        return environment
+
+    def get_at(self, distance: int, name: str) -> object:
+        return self.ancestor(distance)._values[name]
+
+    def assign_at(self, distance: int, name: Token, value: object) -> None:
+        self.ancestor(distance)._values[name.lexeme] = value

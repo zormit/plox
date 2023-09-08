@@ -13,7 +13,7 @@ from .token_type import *
 @define
 class Resolver:
     _interpreter: Interpreter
-    _scopes: list[dict[str, bool]]
+    _scopes: list[dict[str, bool]] = Factory(list)
 
     def visit_block_stmt(self, stmt: Block) -> None:
         self._begin_scope()
@@ -21,7 +21,8 @@ class Resolver:
         self._end_scope()
 
     def resolve(self, statements: list[Stmt]) -> None:
-        map(self._resolve, statements)
+        for statement in statements:
+            self._resolve(statement)
 
     def _resolve(self, node: Stmt | Expr) -> None:
         node.visit(self)
@@ -53,11 +54,16 @@ class Resolver:
         self._resolve(stmt.expression)
 
     def visit_function_stmt(self, stmt: Function) -> None:
+        self._declare(stmt.name)
+        self._define(stmt.name)
+        self._resolve_function(stmt)
+
+    def _resolve_function(self, function: Function):
         self._begin_scope()
-        for param in stmt.parameters:
+        for param in function.parameters:
             self._declare(param)
             self._define(param)
-        self.resolve(stmt.body)
+        self.resolve(function.body)
         self._end_scope()
 
     def visit_if_stmt(self, stmt: If) -> None:
@@ -93,7 +99,8 @@ class Resolver:
 
     def visit_call_expr(self, expr: Call) -> None:
         self._resolve(expr.callee)
-        map(self._resolve, expr.arguments)
+        for argument in expr.arguments:
+            self._resolve(argument)
 
     def visit_grouping_expr(self, expr: Grouping) -> None:
         self._resolve(expr.expression)
@@ -109,7 +116,7 @@ class Resolver:
         self._resolve(expr.right)
 
     def visit_variable_expr(self, expr: Variable) -> None:
-        if (len(self._scopes) > 0) and (not self._scopes[-1][expr.name.lexeme]):
+        if len(self._scopes) > 0 and self._scopes[-1].get(expr.name.lexeme) == False:
             error_handler.token_error(
                 expr.name, "Can't read local variable in its own initializer."
             )

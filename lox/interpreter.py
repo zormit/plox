@@ -14,6 +14,7 @@ from .token_type import GREATER
 class Interpreter:
     global_env: Environment = Factory(lambda: Environment())
     _environment: Environment | None = None
+    _locals: dict[Expr, int] = Factory(dict)
 
     @define
     class RuntimeReturn(RuntimeError):
@@ -52,6 +53,9 @@ class Interpreter:
 
     def execute(self, stmt: Stmt):
         return stmt.visit(self)
+
+    def resolve(self, expr: Expr, depth: int):
+        self._locals[expr] = depth
 
     def evaluate(self, expr: Expr) -> str | float | bool | None:
         return expr.visit(self)
@@ -118,7 +122,11 @@ class Interpreter:
 
     def visit_assign_expr(self, expr: Assign) -> object:
         value = self.evaluate(expr.value)
-        self._environment.assign(expr.name, value)
+        distance = self._locals.get(expr)
+        if distance is not None:
+            self.environment.assign_at(distance, expr.name, value)
+        else:
+            self.global_env.assign(expr.name, value)
         return value
 
     def visit_binary_expr(self, expr: Binary) -> object:
@@ -208,7 +216,13 @@ class Interpreter:
         return None
 
     def visit_variable_expr(self, expr: Variable) -> object:
-        return self._environment.get(expr.name)
+        return self._lookup_variable(expr.name, expr)
+
+    def _lookup_variable(self, name: Token, expr: Expr) -> object:
+        distance = self._locals.get(expr)
+        if distance is not None and self._environment is not None:
+            return self._environment.get_at(distance, name.lexeme)
+        return self.global_env.get(name)
 
     def truthy(self, o: object) -> bool:
         if o is None:

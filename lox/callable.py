@@ -15,12 +15,13 @@ class LoxCallable:
 @define
 class LoxFunction(LoxCallable):
     _declaration: Function
+    _closure: Environment
 
     def arity(self) -> int:
         return len(self._declaration.parameters)
 
     def call(self, interpreter, arguments: list[object]) -> object:
-        environment = Environment(interpreter.global_env)
+        environment = Environment(self._closure)
         for i, parameter in enumerate(self._declaration.parameters):
             environment.define(parameter.lexeme, arguments[i])
 

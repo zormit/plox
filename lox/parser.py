@@ -22,6 +22,8 @@ class Parser:
 
     def _declaration(self) -> Optional[Stmt]:
         try:
+            if self._match(FUN):
+                return self._function("function")
             if self._match(VAR):
                 return self._var_declaration()
             return self._statement()
@@ -30,8 +32,6 @@ class Parser:
             return None
 
     def _statement(self) -> Stmt:
-        if self._match(FUN):
-            return self._function("function")
         if self._match(FOR):
             return self._for_statement()
         if self._match(IF):

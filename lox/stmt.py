@@ -4,14 +4,14 @@ from .expr import Expr
 from .token import Token
 
 
-@define
+@define(frozen=True)
 class Stmt:
     # TODO: make abstract method? How to define this interface?
     def visit(self, visitor):
         pass
 
 
-@define
+@define(frozen=True)
 class Block(Stmt):
     statements: list[Stmt]
 
@@ -19,7 +19,7 @@ class Block(Stmt):
         visitor.visit_block_stmt(self)
 
 
-@define
+@define(frozen=True)
 class Expression(Stmt):
     expression: Expr
 
@@ -27,7 +27,7 @@ class Expression(Stmt):
         visitor.visit_expression_stmt(self)
 
 
-@define
+@define(frozen=True)
 class If(Stmt):
     condition: Expr
     then_branch: Stmt
@@ -37,7 +37,7 @@ class If(Stmt):
         visitor.visit_if_stmt(self)
 
 
-@define
+@define(frozen=True)
 class Function(Stmt):
     name: Token
     parameters: list[Token]
@@ -47,7 +47,7 @@ class Function(Stmt):
         visitor.visit_function_stmt(self)
 
 
-@define
+@define(frozen=True)
 class Print(Stmt):
     expression: Expr
 
@@ -55,7 +55,7 @@ class Print(Stmt):
         visitor.visit_print_stmt(self)
 
 
-@define
+@define(frozen=True)
 class Return(Stmt):
     keyword: Token
     value: Expr | None
@@ -64,7 +64,7 @@ class Return(Stmt):
         visitor.visit_return_stmt(self)
 
 
-@define
+@define(frozen=True)
 class Var(Stmt):
     name: Token
     initializer: Optional[Expr]
@@ -73,7 +73,7 @@ class Var(Stmt):
         visitor.visit_var_stmt(self)
 
 
-@define
+@define(frozen=True)
 class While(Stmt):
     condition: Expr
     body: Stmt

@@ -2,14 +2,14 @@ from attrs import define
 from .token import Token
 
 
-@define
+@define(frozen=True)
 class Expr:
     # TODO: make abstract method? How to define this interface?
     def visit(self, visitor):
         raise NotImplemented
 
 
-@define
+@define(frozen=True)
 class Assign(Expr):
     name: Token
     value: Expr
@@ -18,7 +18,7 @@ class Assign(Expr):
         return visitor.visit_assign_expr(self)
 
 
-@define
+@define(frozen=True)
 class Binary(Expr):
     left: Expr
     operator: Token
@@ -28,7 +28,7 @@ class Binary(Expr):
         return visitor.visit_binary_expr(self)
 
 
-@define
+@define(frozen=True)
 class Call(Expr):
     callee: Expr
     paren: Token
@@ -38,7 +38,7 @@ class Call(Expr):
         return visitor.visit_call_expr(self)
 
 
-@define
+@define(frozen=True)
 class Grouping(Expr):
     expression: Expr
 
@@ -46,7 +46,7 @@ class Grouping(Expr):
         return visitor.visit_grouping_expr(self)
 
 
-@define
+@define(frozen=True)
 class Literal(Expr):
     # TODO: refine this to what we'd expect (float, bool, str, None)
     value: object
@@ -55,7 +55,7 @@ class Literal(Expr):
         return visitor.visit_literal_expr(self)
 
 
-@define
+@define(frozen=True)
 class Logical(Expr):
     left: Expr
     operator: Token
@@ -65,7 +65,7 @@ class Logical(Expr):
         return visitor.visit_logical_expr(self)
 
 
-@define
+@define(frozen=True)
 class Unary(Expr):
     operator: Token
     right: Expr
@@ -74,7 +74,7 @@ class Unary(Expr):
         return visitor.visit_unary_expr(self)
 
 
-@define
+@define(frozen=True)
 class Variable(Expr):
     name: Token
 

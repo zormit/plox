@@ -46,6 +46,7 @@ def runPrompt():
         except EOFError:
             break
         run(line)
+        error_handler.reset()
 
 
 parser = argparse.ArgumentParser(description="lox interpreter")

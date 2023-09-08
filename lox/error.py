@@ -33,6 +33,10 @@ class ErrorHandler:
     def eprint(self, msg: str):
         print(msg, file=sys.stderr)
 
+    def reset(self):
+        self.had_error = False
+        self.had_runtime_error = False
+
 
 # singleton for globally tracking whether error occurred
 error_handler = ErrorHandler()

@@ -11,7 +11,7 @@ from .token import Token
 from .token_type import *
 
 
-FunctionType = Enum("FunctionType", ["NONE", "FUNCTION", "METHOD"])
+FunctionType = Enum("FunctionType", ["NONE", "FUNCTION", "INITIALIZER", "METHOD"])
 ClassType = Enum("ClassType", ["NONE", "CLASS"])
 
 
@@ -38,7 +38,10 @@ class Resolver:
 
         self._scopes[-1]["this"] = True
         for method in stmt.methods:
-            self._resolve_function(method, FunctionType.METHOD)
+            declaration = FunctionType.METHOD
+            if method.name.lexeme == "init":
+                declaration = FunctionType.INITIALIZER
+            self._resolve_function(method, declaration)
 
         self._end_scope()
         self._current_class = enclosing_class
@@ -112,6 +115,10 @@ class Resolver:
             error_handler.token_error(stmt.keyword, "Can't return from top-level code.")
 
         if stmt.value is not None:
+            if self._current_function == FunctionType.INITIALIZER:
+                error_handler.token_error(
+                    stmt.keyword, "Can't return a value from an initializer."
+                )
             self._resolve(stmt.value)
 
     def visit_var_stmt(self, stmt: Var) -> None:

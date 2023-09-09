@@ -19,11 +19,12 @@ class LoxCallable:
 class LoxFunction(LoxCallable):
     _declaration: Function
     _closure: Environment
+    _is_initializer: bool
 
     def bind(self, instance: LoxInstance) -> LoxFunction:
         environment = Environment(self._closure)
         environment.define("this", instance)
-        return LoxFunction(self._declaration, environment)
+        return LoxFunction(self._declaration, environment, self._is_initializer)
 
     def arity(self) -> int:
         return len(self._declaration.parameters)
@@ -36,7 +37,11 @@ class LoxFunction(LoxCallable):
         try:
             interpreter.execute_block(self._declaration.body, environment)
         except interpreter.RuntimeReturn as return_value:
+            if self._is_initializer:
+                return self._closure.get_at(0, "this")
             return return_value.value
+        if self._is_initializer:
+            return self._closure.get_at(0, "this")
         return None
 
     def __str__(self) -> str:
@@ -49,10 +54,16 @@ class LoxClass(LoxCallable):
     methods: dict[str, LoxFunction]
 
     def arity(self) -> int:
-        return 0
+        initializer = self.find_method("init")
+        if initializer is None:
+            return 0
+        return initializer.arity()
 
     def call(self, interpreter, arguments: list[object]) -> object:
-        return LoxInstance(self)
+        instance = LoxInstance(self)
+        if initializer := self.find_method("init"):
+            initializer.bind(instance).call(interpreter, arguments)
+        return instance
 
     def find_method(self, name: str) -> LoxFunction | None:
         return self.methods.get(name)

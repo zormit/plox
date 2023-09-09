@@ -12,6 +12,7 @@ from .token_type import *
 
 
 FunctionType = Enum("FunctionType", ["NONE", "FUNCTION", "METHOD"])
+ClassType = Enum("ClassType", ["NONE", "CLASS"])
 
 
 @define
@@ -20,6 +21,7 @@ class Resolver:
     _scopes: list[dict[str, bool]] = Factory(list)
     # TODO: do we need factory here? :thinking:
     _current_function: FunctionType = FunctionType.NONE
+    _current_class: ClassType = ClassType.NONE
 
     def visit_block_stmt(self, stmt: Block) -> None:
         self._begin_scope()
@@ -27,6 +29,8 @@ class Resolver:
         self._end_scope()
 
     def visit_class_stmt(self, stmt: Class) -> None:
+        enclosing_class = self._current_class
+        self._current_class = ClassType.CLASS
         self._declare(stmt.name)
         self._define(stmt.name)
 
@@ -37,6 +41,7 @@ class Resolver:
             self._resolve_function(method, FunctionType.METHOD)
 
         self._end_scope()
+        self._current_class = enclosing_class
 
     def resolve(self, statements: list[Stmt]) -> None:
         for statement in statements:
@@ -150,6 +155,11 @@ class Resolver:
         self._resolve(expr.expr_object)
 
     def visit_this_expr(self, expr: This) -> None:
+        if self._current_class == ClassType.NONE:
+            error_handler.token_error(
+                expr.keyword, "Can't use 'this' outside of a class."
+            )
+            return
         self._resolve_local(expr, expr.keyword)
 
     def visit_unary_expr(self, expr: Unary) -> None:

@@ -277,6 +277,9 @@ class Parser:
         if self._match(NUMBER, STRING):
             return Literal(self._previous().literal)
 
+        if self._match(THIS):
+            return This(self._previous())
+
         if self._match(IDENTIFIER):
             return Variable(self._previous())
 

@@ -232,6 +232,9 @@ class Interpreter:
         obj.set(expr.name, value)
         return value
 
+    def visit_this_expr(self, expr: This) -> object:
+        return self._lookup_variable(expr.keyword, expr)
+
     def visit_unary_expr(self, expr: Unary) -> object:
         right = self.evaluate(expr.right)
         match expr.operator.token_type:

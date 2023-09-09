@@ -85,6 +85,14 @@ class Set(Expr):
 
 
 @define(frozen=True)
+class This(Expr):
+    keyword: Token
+
+    def visit(self, visitor):
+        return visitor.visit_this_expr(self)
+
+
+@define(frozen=True)
 class Unary(Expr):
     operator: Token
     right: Expr

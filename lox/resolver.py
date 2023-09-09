@@ -28,9 +28,15 @@ class Resolver:
 
     def visit_class_stmt(self, stmt: Class) -> None:
         self._declare(stmt.name)
+        self._define(stmt.name)
+
+        self._begin_scope()
+
+        self._scopes[-1]["this"] = True
         for method in stmt.methods:
             self._resolve_function(method, FunctionType.METHOD)
-        self._define(stmt.name)
+
+        self._end_scope()
 
     def resolve(self, statements: list[Stmt]) -> None:
         for statement in statements:
@@ -142,6 +148,9 @@ class Resolver:
     def visit_set_expr(self, expr: Set) -> None:
         self._resolve(expr.value)
         self._resolve(expr.expr_object)
+
+    def visit_this_expr(self, expr: This) -> None:
+        self._resolve_local(expr, expr.keyword)
 
     def visit_unary_expr(self, expr: Unary) -> None:
         self._resolve(expr.right)

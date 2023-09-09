@@ -1,3 +1,4 @@
+from __future__ import annotations
 from attrs import define, Factory
 from .stmt import Function
 from .environment import Environment
@@ -18,6 +19,11 @@ class LoxCallable:
 class LoxFunction(LoxCallable):
     _declaration: Function
     _closure: Environment
+
+    def bind(self, instance: LoxInstance) -> LoxFunction:
+        environment = Environment(self._closure)
+        environment.define("this", instance)
+        return LoxFunction(self._declaration, environment)
 
     def arity(self) -> int:
         return len(self._declaration.parameters)
@@ -65,7 +71,7 @@ class LoxInstance:
             return self._fields[name.lexeme]
         method = self.klass.find_method(name.lexeme)
         if method is not None:
-            return method
+            return method.bind(self)
         raise LoxRuntimeError(name, f"Undefined property {name.lexeme}.")
 
     def set(self, name: Token, value: object) -> None:

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from attrs import define, Factory
 from typing import TypeGuard, Callable
 from .callable import LoxCallable, LoxFunction, LoxClass, LoxInstance
@@ -24,7 +25,7 @@ class Interpreter:
         self._environment = self.global_env
 
     @classmethod
-    def with_time(cls) -> "Interpreter":
+    def with_time(cls) -> Interpreter:
         import time
 
         interpreter = Interpreter()
@@ -216,6 +217,16 @@ class Interpreter:
             if not self.truthy(left):
                 return left
         return self.evaluate(expr.right)
+
+    def visit_set_expr(self, expr: Set) -> object:
+        obj = self.evaluate(expr.expr_object)
+
+        if not isinstance(obj, LoxInstance):
+            raise LoxRuntimeError(expr.name, "Only instances have fields.")
+
+        value = self.evaluate(expr.value)
+        obj.set(expr.name, value)
+        return value
 
     def visit_unary_expr(self, expr: Unary) -> object:
         right = self.evaluate(expr.right)

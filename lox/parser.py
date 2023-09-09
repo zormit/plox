@@ -178,6 +178,8 @@ class Parser:
             if isinstance(expr, Variable):
                 name = expr.name
                 return Assign(name, value)
+            elif isinstance(expr, Get):
+                return Set(expr.expr_object, expr.name, value)
 
             self._error(equals, "Invalid assignment target.")
 

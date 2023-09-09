@@ -62,5 +62,8 @@ class LoxInstance:
         except KeyError:
             raise LoxRuntimeError(name, f"Undefined property {name.lexeme}.")
 
+    def set(self, name: Token, value: object) -> None:
+        self._fields[name.lexeme] = value
+
     def __str__(self) -> str:
         return f"{self.klass.name} instance"

@@ -75,6 +75,16 @@ class Logical(Expr):
 
 
 @define(frozen=True)
+class Set(Expr):
+    expr_object: Expr
+    name: Token
+    value: Expr
+
+    def visit(self, visitor):
+        return visitor.visit_set_expr(self)
+
+
+@define(frozen=True)
 class Unary(Expr):
     operator: Token
     right: Expr

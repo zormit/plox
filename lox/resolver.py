@@ -137,6 +137,10 @@ class Resolver:
         self._resolve(expr.left)
         self._resolve(expr.right)
 
+    def visit_set_expr(self, expr: Set) -> None:
+        self._resolve(expr.value)
+        self._resolve(expr.expr_object)
+
     def visit_unary_expr(self, expr: Unary) -> None:
         self._resolve(expr.right)
 

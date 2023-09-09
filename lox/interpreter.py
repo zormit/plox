@@ -79,7 +79,11 @@ class Interpreter:
 
     def visit_class_stmt(self, stmt: Class) -> None:
         self._environment.define(stmt.name.lexeme, None)
-        klass = LoxClass(stmt.name.lexeme)
+        methods: dict[str, LoxFunction] = {}
+        for method in stmt.methods:
+            function = LoxFunction(method, self._environment)
+            methods[method.name.lexeme] = function
+        klass = LoxClass(stmt.name.lexeme, methods)
         self._environment.assign(stmt.name, klass)
 
     def execute_block(self, statements: list[Stmt], environment: Environment) -> None:

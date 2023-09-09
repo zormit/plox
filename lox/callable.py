@@ -15,20 +15,6 @@ class LoxCallable:
 
 
 @define
-class LoxClass(LoxCallable):
-    name: str
-
-    def arity(self) -> int:
-        return 0
-
-    def call(self, interpreter, arguments: list[object]) -> object:
-        return LoxInstance(self)
-
-    def __str__(self) -> str:
-        return self.name
-
-
-@define
 class LoxFunction(LoxCallable):
     _declaration: Function
     _closure: Environment
@@ -52,15 +38,35 @@ class LoxFunction(LoxCallable):
 
 
 @define
+class LoxClass(LoxCallable):
+    name: str
+    methods: dict[str, LoxFunction]
+
+    def arity(self) -> int:
+        return 0
+
+    def call(self, interpreter, arguments: list[object]) -> object:
+        return LoxInstance(self)
+
+    def find_method(self, name: str) -> LoxFunction | None:
+        return self.methods.get(name)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+@define
 class LoxInstance:
     klass: LoxClass
     _fields: dict[str, object] = Factory(dict)
 
     def get(self, name: Token) -> object:
-        try:
+        if name.lexeme in self._fields:
             return self._fields[name.lexeme]
-        except KeyError:
-            raise LoxRuntimeError(name, f"Undefined property {name.lexeme}.")
+        method = self.klass.find_method(name.lexeme)
+        if method is not None:
+            return method
+        raise LoxRuntimeError(name, f"Undefined property {name.lexeme}.")
 
     def set(self, name: Token, value: object) -> None:
         self._fields[name.lexeme] = value

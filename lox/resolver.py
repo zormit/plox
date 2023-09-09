@@ -11,7 +11,7 @@ from .token import Token
 from .token_type import *
 
 
-FunctionType = Enum("FunctionType", ["NONE", "FUNCTION"])
+FunctionType = Enum("FunctionType", ["NONE", "FUNCTION", "METHOD"])
 
 
 @define
@@ -28,6 +28,8 @@ class Resolver:
 
     def visit_class_stmt(self, stmt: Class) -> None:
         self._declare(stmt.name)
+        for method in stmt.methods:
+            self._resolve_function(method, FunctionType.METHOD)
         self._define(stmt.name)
 
     def resolve(self, statements: list[Stmt]) -> None:

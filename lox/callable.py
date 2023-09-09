@@ -1,6 +1,8 @@
-from attrs import define
+from attrs import define, Factory
 from .stmt import Function
 from .environment import Environment
+from .error import LoxRuntimeError
+from .token import Token
 
 
 @define
@@ -52,6 +54,13 @@ class LoxFunction(LoxCallable):
 @define
 class LoxInstance:
     klass: LoxClass
+    _fields: dict[str, object] = Factory(dict)
+
+    def get(self, name: Token) -> object:
+        try:
+            return self._fields[name.lexeme]
+        except KeyError:
+            raise LoxRuntimeError(name, f"Undefined property {name.lexeme}.")
 
     def __str__(self) -> str:
         return f"{self.klass.name} instance"

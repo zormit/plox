@@ -1,6 +1,6 @@
 from attrs import define, Factory
 from typing import TypeGuard, Callable
-from .callable import LoxCallable, LoxFunction, LoxClass
+from .callable import LoxCallable, LoxFunction, LoxClass, LoxInstance
 from .environment import Environment
 from .error import LoxRuntimeError, error_handler
 from .expr import *
@@ -182,6 +182,13 @@ class Interpreter:
             return function.call(self, arguments)
         else:
             raise LoxRuntimeError(expr.paren, "Can only call functions and classes.")
+
+    def visit_get_expr(self, expr: Get):
+        obj = self.evaluate(expr.expr_object)
+        if isinstance(obj, LoxInstance):
+            return obj.get(expr.name)
+
+        raise LoxRuntimeError(expr.name, "Only instances have properties.")
 
     def is_equal(self, a, b):
         if a is None and b is None:

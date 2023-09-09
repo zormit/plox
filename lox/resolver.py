@@ -124,6 +124,9 @@ class Resolver:
         for argument in expr.arguments:
             self._resolve(argument)
 
+    def visit_get_expr(self, expr: Get) -> None:
+        self._resolve(expr.expr_object)
+
     def visit_grouping_expr(self, expr: Grouping) -> None:
         self._resolve(expr.expression)
 

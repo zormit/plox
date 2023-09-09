@@ -3,15 +3,14 @@ from lox.parser import Parser
 from lox.scanner import Scanner
 
 code = """
-var a = "global";
-{
-  fun showA() {
-    print a; // this came from env_0
+class Breakfast {
+  cook() {
+    print "Eggs a-fryin'!";
   }
 
-  showA();
-  var a = "block";
-  showA();
+  serve(who) {
+    print "Enjoy your breakfast, " + who + ".";
+  }
 }
 """
 

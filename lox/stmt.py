@@ -48,6 +48,15 @@ class Function(Stmt):
 
 
 @define(frozen=True)
+class Class(Stmt):
+    name: Token
+    methods: list[Function]
+
+    def visit(self, visitor):
+        visitor.visit_class_stmt(self)
+
+
+@define(frozen=True)
 class Print(Stmt):
     expression: Expr
 

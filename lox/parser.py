@@ -22,6 +22,8 @@ class Parser:
 
     def _declaration(self) -> Optional[Stmt]:
         try:
+            if self._match(CLASS):
+                return self._class_declaration()
             if self._match(FUN):
                 return self._function("function")
             if self._match(VAR):
@@ -30,6 +32,18 @@ class Parser:
         except self.ParseError:
             self._synchronize()
             return None
+
+    def _class_declaration(self) -> Stmt:
+        name = self._consume(IDENTIFIER, "Expect class name.")
+        self._consume(LEFT_BRACE, "Expect '{' before class body.")
+
+        methods = []
+        while not self._check(RIGHT_BRACE) and not self._at_end():
+            methods.append(self._function("method"))
+
+        self._consume(RIGHT_BRACE, "Expect '}' after class body.")
+
+        return Class(name, methods)
 
     def _statement(self) -> Stmt:
         if self._match(FOR):
@@ -46,7 +60,7 @@ class Parser:
             return Block(self._block())
         return self._expression_statement()
 
-    def _function(self, kind: str) -> Stmt:
+    def _function(self, kind: str) -> Function:
         name = self._consume(IDENTIFIER, f"Expect {kind} name.")
         self._consume(LEFT_PAREN, f"Expect '(' after {kind} name.")
         parameters: list[Token] = []

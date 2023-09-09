@@ -12,6 +12,9 @@ class Breakfast {
     print "Enjoy your breakfast, " + who + ".";
   }
 }
+var breakfast = Breakfast();
+var person = "me";
+breakfast.cook().serve(person);
 """
 
 tokens = Scanner(code).scan_tokens()

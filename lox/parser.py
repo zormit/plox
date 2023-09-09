@@ -257,6 +257,9 @@ class Parser:
         while True:
             if self._match(LEFT_PAREN):
                 expr = self._finish_call(expr)
+            elif self._match(DOT):
+                name = self._consume(IDENTIFIER, "Expect prperty name after '.'.")
+                expr = Get(expr, name)
             else:
                 break
         return expr

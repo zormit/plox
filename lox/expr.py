@@ -39,6 +39,15 @@ class Call(Expr):
 
 
 @define(frozen=True)
+class Get(Expr):
+    expr_object: Expr
+    name: Token
+
+    def visit(self, visitor):
+        return visitor.visit_get_expr(self)
+
+
+@define(frozen=True)
 class Grouping(Expr):
     expression: Expr
 

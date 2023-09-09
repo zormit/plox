@@ -1,6 +1,6 @@
 from attrs import define, Factory
 from typing import TypeGuard, Callable
-from .callable import LoxCallable, LoxFunction
+from .callable import LoxCallable, LoxFunction, LoxClass
 from .environment import Environment
 from .error import LoxRuntimeError, error_handler
 from .expr import *
@@ -75,6 +75,11 @@ class Interpreter:
     def visit_block_stmt(self, stmt: Block) -> None:
         # TODO: gnah, mypy makes me go mad!
         self.execute_block(stmt.statements, Environment(self._environment))
+
+    def visit_class_stmt(self, stmt: Class) -> None:
+        self._environment.define(stmt.name.lexeme, None)
+        klass = LoxClass(stmt.name.lexeme)
+        self._environment.assign(stmt.name, klass)
 
     def execute_block(self, statements: list[Stmt], environment: Environment) -> None:
         previous = self._environment

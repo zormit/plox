@@ -26,6 +26,10 @@ class Resolver:
         self.resolve(stmt.statements)
         self._end_scope()
 
+    def visit_class_stmt(self, stmt: Class) -> None:
+        self._declare(stmt.name)
+        self._define(stmt.name)
+
     def resolve(self, statements: list[Stmt]) -> None:
         for statement in statements:
             self._resolve(statement)

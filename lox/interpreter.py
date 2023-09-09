@@ -124,7 +124,7 @@ class Interpreter:
         value = self.evaluate(expr.value)
         distance = self._locals.get(expr)
         if distance is not None:
-            self.environment.assign_at(distance, expr.name, value)
+            self._environment.assign_at(distance, expr.name, value)
         else:
             self.global_env.assign(expr.name, value)
         return value

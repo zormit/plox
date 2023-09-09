@@ -43,6 +43,10 @@ class Resolver:
         if len(self._scopes) == 0:
             return
         scope = self._scopes[-1]
+        if name.lexeme in scope:
+            error_handler.token_error(
+                name, "Already a variable with this name in this scope."
+            )
         scope[name.lexeme] = False
 
     def _define(self, name: Token) -> None:
@@ -81,7 +85,7 @@ class Resolver:
         self._resolve(stmt.condition)
         self._resolve(stmt.then_branch)
         if stmt.else_branch is not None:
-            self._resolve(stmt.then_branch)
+            self._resolve(stmt.else_branch)
 
     def visit_print_stmt(self, stmt: Print) -> None:
         self._resolve(stmt.expression)

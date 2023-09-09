@@ -199,12 +199,12 @@ class Interpreter:
     def is_equal(self, a, b):
         if a is None and b is None:
             return True
-        if isinstance(a, bool) and isinstance(b, bool):
-            return a == b
-        if isinstance(a, float) and isinstance(b, float):
-            return a == b
-        if isinstance(a, str) and isinstance(b, str):
-            return a == b
+        for t in [bool, float, str]:
+            if isinstance(a, t) and isinstance(b, t):
+                return a == b
+        for t in [LoxInstance, LoxFunction, LoxClass]:
+            if isinstance(a, t) and isinstance(b, t):
+                return a is b
         return False
 
     def visit_grouping_expr(self, expr: Grouping) -> object:

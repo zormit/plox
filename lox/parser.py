@@ -260,7 +260,7 @@ class Parser:
             if self._match(LEFT_PAREN):
                 expr = self._finish_call(expr)
             elif self._match(DOT):
-                name = self._consume(IDENTIFIER, "Expect prperty name after '.'.")
+                name = self._consume(IDENTIFIER, "Expect property name after '.'.")
                 expr = Get(expr, name)
             else:
                 break

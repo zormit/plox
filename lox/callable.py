@@ -83,7 +83,7 @@ class LoxInstance:
         method = self.klass.find_method(name.lexeme)
         if method is not None:
             return method.bind(self)
-        raise LoxRuntimeError(name, f"Undefined property {name.lexeme}.")
+        raise LoxRuntimeError(name, f"Undefined property '{name.lexeme}'.")
 
     def set(self, name: Token, value: object) -> None:
         self._fields[name.lexeme] = value

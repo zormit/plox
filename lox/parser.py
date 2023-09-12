@@ -234,7 +234,7 @@ class Parser:
 
     def _comparison(self) -> Expr:
         expr = self._term()
-        while self._match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL):
+        while self._match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL, TILDE_EQUAL):
             operator = self._previous()
             right = self._term()
             expr = Binary(expr, operator, right)

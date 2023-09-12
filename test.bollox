@@ -1,23 +1,56 @@
-// base 10; to define which base the numbers have in this file/environment
+var myvalue = nil;
+if (!myvalue) {
+    print "no value here";
+}
+myvalue = 3;
+var not_myvalue = !myvalue;
+if (not_myvalue) {
+    print not_myvalue;
+    print "huh?";
+}
+
+print "XXXXXX";
+// base 10; to define which base the numbers have in this file and/or scope?
 // "base dial" abc: 2 def: 3 ghi: 4 jkl: 5 mno: 6 pqrs: 7 tuv: 8 wxyz: 9. You can't type 1 and 0 :shrug:
 // please print a;
 // prettyplease print a;
 // callme moritz; // takes a function. will be evaluated.
 // callme maybe f; // will either be evaluated or passed on as a function :D
 // wat -- I think this keyword should print the syntax tree somehow.
+// Do something with variable scope! Take a random variable from the environment or so :D
+
 var foo = 1; //100 ?
+
+var between = 10; // because name has b, this will be somehow binary??
 
 var word = "word";
 // var word = "not enough space"; // Runtime Error
 var thisvariablehasenoughspace = "there is enough space here";
 // var p = thisvariablehasenoughspace; // Runtime Error?
-// var THiSiSMUCHLaRGER = "because obviously every capital letter can take 10 chars, right??"
-// var THISISCONSTANT = 42 // can't be changed, because allcaps are constant obviously?
+var tHiSiSMUUUUCHLaRGER = "clearly every capital letter can take 10 chars, right??";
+var THISISCONSTANT = 42; // can't be changed, because allcaps are constant, obviously?
+// fails: THISISCONSTANT = 40;
 
-// Do something with variable scope! Take a random variable from the environment or so :D
+fun greeting(p1, p2) {
+    return "Hello" + p1 + p2;
+}
+
+
+print greeting(" ", "Ian");
+
+var f = greeting;
+print f("xxx", "Mo");
 
 
 // pemdas = parens exponent multiplication addition subtraction. Change order of precedence?
+{
+print "Strong";
+print "in";
+print "block";
+print "the";
+print "force";
+print "is";
+}
 
 <:
 print "Strong";
@@ -27,6 +60,17 @@ print "the";
 print "force";
 print "is";
 :>
+
+var test = 0;
+<:
+test = test + 1;
+test = test + 1;
+test = test * 2;
+test = test * 2;
+:>
+print test;
+
+print "password" ~= "pasword";
 
 
 var a = 1;

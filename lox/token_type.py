@@ -22,6 +22,7 @@ TokenType = Enum(
         "EQUAL_EQUAL",
         "GREATER",
         "GREATER_EQUAL",
+        "TILDE_EQUAL",
         "LESS",
         "LESS_EQUAL",
         "IDENTIFIER",
@@ -48,6 +49,9 @@ TokenType = Enum(
         "MAYBE",
         "PLEASE",
         "PRETTYPLEASE",
+        "WAT",
+        "BASE",
+        "CALLME",
     ],
 )
 
@@ -71,6 +75,7 @@ EQUAL: TokenType
 EQUAL_EQUAL: TokenType
 GREATER: TokenType
 GREATER_EQUAL: TokenType
+TILDE_EQUAL: TokenType
 LESS: TokenType
 LESS_EQUAL: TokenType
 IDENTIFIER: TokenType
@@ -97,4 +102,7 @@ WINK: TokenType
 MAYBE: TokenType
 PLEASE: TokenType
 PRETTYPLEASE: TokenType
+WAT: TokenType
+BASE: TokenType
+CALLME: TokenType
 globals().update({token_type.name: token_type for token_type in TokenType})

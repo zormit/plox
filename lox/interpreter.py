@@ -1,6 +1,8 @@
 from __future__ import annotations
 from attrs import define, Factory
+import math
 from typing import TypeGuard, Callable
+from Levenshtein import distance as leven_distance
 from .callable import LoxCallable, LoxFunction, LoxClass, LoxInstance
 from .environment import Environment
 from .error import LoxRuntimeError, error_handler
@@ -130,9 +132,9 @@ class Interpreter:
 
     def check_space(self, value, name: Token):
         if isinstance(value, str):
-            space = len(name.lexeme)
+            space = sum([10 if c.isupper() else 1 for c in name.lexeme])
             n = len(value)
-            if len(value) > len(name.lexeme):
+            if n > space:
                 raise LoxRuntimeError(
                     name,
                     f"Not enough space to store string of length {n}. This variable can only carry {space} characters.",
@@ -144,6 +146,7 @@ class Interpreter:
 
     def visit_assign_expr(self, expr: Assign) -> object:
         value = self.evaluate(expr.value)
+        self.check_constant(expr.name)
         self.check_space(value, expr.name)
         distance = self._locals.get(expr)
         if distance is not None:
@@ -151,6 +154,10 @@ class Interpreter:
         else:
             self.global_env.assign(expr.name, value)
         return value
+
+    def check_constant(self, name: Token):
+        if name.lexeme.isupper():
+            raise LoxRuntimeError(name, "Sorry, you can't change constants.")
 
     def visit_binary_expr(self, expr: Binary) -> object:
         left = self.evaluate(expr.left)
@@ -171,6 +178,16 @@ class Interpreter:
             TokenType.SLASH: (lambda a, b: a / b),
             TokenType.STAR: (lambda a, b: a * b),
         }
+        if expr.operator.token_type == TokenType.TILDE_EQUAL:
+            if isinstance(left, str) and isinstance(right, str):
+                return leven_distance(left, right) <= 1
+            if isinstance(left, float) and isinstance(right, float):
+                if left < right:
+                    right, left = left, right
+                return right * 1.01 >= left
+            if isinstance(left, bool) and isinstance(right, bool):
+                return True
+            return False
         if expr.operator.token_type == TokenType.PLUS:
             if isinstance(left, float) and isinstance(right, float):
                 return left + right
@@ -252,6 +269,8 @@ class Interpreter:
         right = self.evaluate(expr.right)
         match expr.operator.token_type:
             case TokenType.BANG:
+                if isinstance(right, float):
+                    return math.factorial(int(right))
                 return not self.truthy(right)
             case TokenType.MINUS:
                 if self.ensure_float([right], expr.operator):

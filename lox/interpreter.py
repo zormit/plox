@@ -125,7 +125,18 @@ class Interpreter:
         value = None
         if stmt.initializer is not None:
             value = self.evaluate(stmt.initializer)
+            self.check_space(value, stmt.name)
         self._environment.define(stmt.name.lexeme, value)
+
+    def check_space(self, value, name: Token):
+        if isinstance(value, str):
+            space = len(name.lexeme)
+            n = len(value)
+            if len(value) > len(name.lexeme):
+                raise LoxRuntimeError(
+                    name,
+                    f"Not enough space to store string of length {n}. This variable can only carry {space} characters.",
+                )
 
     def visit_while_stmt(self, stmt: While) -> None:
         while self.truthy(self.evaluate(stmt.condition)):
@@ -133,6 +144,7 @@ class Interpreter:
 
     def visit_assign_expr(self, expr: Assign) -> object:
         value = self.evaluate(expr.value)
+        self.check_space(value, expr.name)
         distance = self._locals.get(expr)
         if distance is not None:
             self._environment.assign_at(distance, expr.name, value)

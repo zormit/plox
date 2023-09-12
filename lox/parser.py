@@ -1,4 +1,5 @@
 from attrs import define, Factory
+import random
 from typing import List, Optional
 from .expr import *
 from .stmt import *
@@ -58,6 +59,12 @@ class Parser:
             return self._while_statement()
         if self._match(LEFT_BRACE):
             return Block(self._block())
+        if self._match(LEFT_TAG):
+            statements = self._block(closing=RIGHT_TAG)
+            random.shuffle(statements)
+            return Block(statements)
+        if self._match(MAYBE):
+            return self._maybe_statement()
         return self._expression_statement()
 
     def _function(self, kind: str) -> Function:
@@ -124,13 +131,14 @@ class Parser:
             else_branch = self._statement()
         return If(condition, then_branch, else_branch)
 
-    def _block(self) -> list[Stmt]:
+    def _block(self, closing=RIGHT_BRACE) -> list[Stmt]:
         statements: list[Stmt] = []
-        while not self._check(RIGHT_BRACE) and not self._at_end():
+        while not self._check(closing) and not self._at_end():
             declaration = self._declaration()
             if declaration is not None:
                 statements.append(declaration)
-        self._consume(RIGHT_BRACE, "Expect '}' after block.")
+        closing_str = "}" if closing == RIGHT_BRACE else ":>"
+        self._consume(closing, f"Expect '{closing_str}' after block.")
         return statements
 
     def _print_statement(self) -> Stmt:
@@ -171,6 +179,13 @@ class Parser:
         self._consume(RIGHT_PAREN, "Expect ')' after condition")
         body = self._statement()
         return While(condition, body)
+
+    def _maybe_statement(self) -> Stmt:
+        statement = self._statement()
+        if random.choice([True, False]):
+            return statement
+        else:
+            return Nop()
 
     def _expression(self) -> Expr:
         return self._assignment()

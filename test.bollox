@@ -1,0 +1,33 @@
+var a = 1;
+maybe a = a + 9;
+// please print a;
+// prettyplease print a;
+
+var foo = 1; //100
+var abcdefg = 0; // abc efg hijk
+
+var word = "word";
+// var word = "not enough space"; // Runtime Error
+
+
+// pemdas = parens exponent multiplication addition subtraction. Change order of precedence?
+
+<:
+print "Strong";
+print "in";
+print "block";
+print "the";
+print "force";
+print "is";
+:>
+
+var youdliketo = false;
+maybe youdliketo = true;
+if(youdliketo) {
+    print "YES";
+}
+
+maybe print "hello world";
+maybe for (;a < 5; a=a+1) {
+print "ha";
+}

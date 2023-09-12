@@ -30,6 +30,7 @@ class Scanner:
         "true": TRUE,
         "var": VAR,
         "while": WHILE,
+        "maybe": MAYBE,
     }
 
     def scan_tokens(self) -> List[Token]:
@@ -116,8 +117,13 @@ class Scanner:
             case "<":
                 if self.match("="):
                     self.add_token(LESS_EQUAL)
+                elif self.match(":"):
+                    self.add_token(LEFT_TAG)
                 else:
                     self.add_token(LESS)
+            case ":":
+                if self.match(">"):
+                    self.add_token(RIGHT_TAG)
             case ">":
                 if self.match("="):
                     self.add_token(GREATER_EQUAL)

@@ -7,6 +7,8 @@ TokenType = Enum(
         "RIGHT_PAREN",
         "LEFT_BRACE",
         "RIGHT_BRACE",
+        "LEFT_TAG",
+        "RIGHT_TAG",
         "COMMA",
         "DOT",
         "MINUS",
@@ -43,6 +45,9 @@ TokenType = Enum(
         "WHILE",
         "EOF",
         "WINK",
+        "MAYBE",
+        "PLEASE",
+        "PRETTYPLEASE",
     ],
 )
 
@@ -51,6 +56,8 @@ LEFT_PAREN: TokenType
 RIGHT_PAREN: TokenType
 LEFT_BRACE: TokenType
 RIGHT_BRACE: TokenType
+LEFT_TAG: TokenType
+RIGHT_TAG: TokenType
 COMMA: TokenType
 DOT: TokenType
 MINUS: TokenType
@@ -87,4 +94,7 @@ VAR: TokenType
 WHILE: TokenType
 EOF: TokenType
 WINK: TokenType
+MAYBE: TokenType
+PLEASE: TokenType
+PRETTYPLEASE: TokenType
 globals().update({token_type.name: token_type for token_type in TokenType})

@@ -96,7 +96,11 @@ class Scanner:
             case "+":
                 self.add_token(PLUS)
             case ";":
-                self.add_token(SEMICOLON)
+                if self.match("-"):
+                    if self.match(")"):
+                        self.add_token(WINK)
+                else:
+                    self.add_token(SEMICOLON)
             case "*":
                 self.add_token(STAR)
             case "!":

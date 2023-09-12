@@ -135,6 +135,8 @@ class Parser:
 
     def _print_statement(self) -> Stmt:
         value = self._expression()
+        if self._match(WINK):
+            return Nop()
         self._consume(SEMICOLON, "Expect ';' after value")
         return Print(value)
 
@@ -148,6 +150,8 @@ class Parser:
 
     def _expression_statement(self) -> Stmt:
         expr = self._expression()
+        if self._match(WINK):
+            return Nop()
         self._consume(SEMICOLON, "Expect ';' after expression.")
         return Expression(expr)
 
@@ -156,6 +160,8 @@ class Parser:
         initializer = None
         if self._match(EQUAL):
             initializer = self._expression()
+        if self._match(WINK):
+            return Nop()
         self._consume(SEMICOLON, "Expect ';' after variable declaration.")
         return Var(name, initializer)
 

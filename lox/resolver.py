@@ -178,3 +178,6 @@ class Resolver:
                 expr.name, "Can't read local variable in its own initializer."
             )
         self._resolve_local(expr, expr.name)
+
+    def visit_nop_stmt(self, expr: Nop) -> None:
+        pass

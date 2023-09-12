@@ -42,6 +42,7 @@ TokenType = Enum(
         "VAR",
         "WHILE",
         "EOF",
+        "WINK",
     ],
 )
 
@@ -85,4 +86,5 @@ TRUE: TokenType
 VAR: TokenType
 WHILE: TokenType
 EOF: TokenType
+WINK: TokenType
 globals().update({token_type.name: token_type for token_type in TokenType})

@@ -272,3 +272,6 @@ class Interpreter:
         label = "Operand" if len(operands) == 1 else "Operands"
         expected = "a number" if len(operands) == 1 else "numbers"
         raise LoxRuntimeError(operator, f"{label} must be {expected}.")
+
+    def visit_nop_stmt(self, expr: Nop) -> object:
+        return None

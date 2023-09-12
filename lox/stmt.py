@@ -89,3 +89,9 @@ class While(Stmt):
 
     def visit(self, visitor):
         visitor.visit_while_stmt(self)
+
+
+@define(frozen=True)
+class Nop(Stmt):
+    def visit(self, visitor):
+        visitor.visit_nop_stmt(self)

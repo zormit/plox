@@ -1,13 +1,20 @@
-var a = 1;
-maybe a = a + 9;
+// base 10; to define which base the numbers have in this file/environment
+// "base dial" abc: 2 def: 3 ghi: 4 jkl: 5 mno: 6 pqrs: 7 tuv: 8 wxyz: 9. You can't type 1 and 0 :shrug:
 // please print a;
 // prettyplease print a;
-
-var foo = 1; //100
-var abcdefg = 0; // abc efg hijk
+// callme moritz; // takes a function. will be evaluated.
+// callme maybe f; // will either be evaluated or passed on as a function :D
+// wat -- I think this keyword should print the syntax tree somehow.
+var foo = 1; //100 ?
 
 var word = "word";
 // var word = "not enough space"; // Runtime Error
+var thisvariablehasenoughspace = "there is enough space here";
+// var p = thisvariablehasenoughspace; // Runtime Error?
+// var THiSiSMUCHLaRGER = "because obviously every capital letter can take 10 chars, right??"
+// var THISISCONSTANT = 42 // can't be changed, because allcaps are constant obviously?
+
+// Do something with variable scope! Take a random variable from the environment or so :D
 
 
 // pemdas = parens exponent multiplication addition subtraction. Change order of precedence?
@@ -20,6 +27,10 @@ print "the";
 print "force";
 print "is";
 :>
+
+
+var a = 1;
+maybe a = a + 9;
 
 var youdliketo = false;
 maybe youdliketo = true;
